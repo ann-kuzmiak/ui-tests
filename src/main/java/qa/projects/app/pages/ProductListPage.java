@@ -29,4 +29,5 @@ public class ProductListPage extends BasePage {
         }
         return prices;
     }
+
 }

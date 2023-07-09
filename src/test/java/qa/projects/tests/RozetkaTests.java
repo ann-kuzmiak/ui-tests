@@ -12,6 +12,7 @@ import qa.projects.app.pages.ProductListPage;
 
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.WebDriverConditions.url;
 import static qa.projects.app.AppConfig.baseUrl;
 
 public class RozetkaTests {
@@ -21,15 +22,13 @@ public class RozetkaTests {
         open(baseUrl);
     }
 
-    @Test
+    @Test(description = "add and remove from cart")
     public void cartTest() {
         String input = "iphone";
         int productsSize = 0;
-
         BasePage.openCart();
         CartModal.emptyCard.shouldBe(Condition.visible);
         CartModal.closeButton.click();
-
         BasePage.searchInput.setValue(input).pressEnter();
         ProductListPage.firstItemBuyButton.click();
         productsSize++;
@@ -43,7 +42,7 @@ public class RozetkaTests {
         CartModal.products.shouldHave(size(productsSize));
     }
 
-    @Test
+    @Test(description = "Apple category: number of subcategories and one subcategory")
     public static void categoryTest() {
         String category = "Apple";
         int categoriesSize = 20;
@@ -56,7 +55,7 @@ public class RozetkaTests {
         ProductListPage.heading.shouldHave(Condition.text(category));
     }
 
-    @Test
+    @Test(description = "filter selection after search")
     public static void filterTest() {
         String input = "iphone 13";
         int numberOfProductsBefore, numberOfProductsAfter;
@@ -69,12 +68,13 @@ public class RozetkaTests {
 
         //Click on the filter seller Rozetka. - It is not Rozetka in the test, because the number wouldn't change if you click Rozetka
         ProductListPage.filterElementIgnoreCase(input).click();
+        webdriver().shouldHave(url("https://rozetka.com.ua/ua/mobile-phones/c80003/producer=apple;series=113077,113083/"));
         numberOfProductsAfter = ProductListPage.getNumberOfProducts();
 
         Assert.assertTrue(numberOfProductsAfter < numberOfProductsBefore);
     }
 
-    @Test
+    @Test(description = "grid and tile view sizes")
     public static void viewSizeTest() {
         Dimension productTileExpectedSize = new Dimension(177, 234);
         Dimension productGridExpectedSize = new Dimension(230, 304);
@@ -87,16 +87,19 @@ public class RozetkaTests {
         Assert.assertEquals(ProductListPage.productTilePicture.getSize(), productGridExpectedSize, "Product grid size is incorrect");
     }
 
-    @Test
+    @Test(description = "sort from expensive to cheap")
     public static void sortTest() {
         String input = "iphone";
 
         BasePage.searchInput.setValue(input).pressEnter();
 
         ProductListPage.sortingOptionExpensive.click();
-        ProductListPage.getIntProductPrices();
-        Assert.assertTrue(ProductListPage.getIntProductPrices()[0] > ProductListPage.getIntProductPrices()[1]);
-        Assert.assertTrue(ProductListPage.getIntProductPrices()[1] > ProductListPage.getIntProductPrices()[2]);
+
+        webdriver().shouldHave(url("https://rozetka.com.ua/ua/mobile-phones/c80003/producer=apple;sort=expensive/"));
+        int[] productPrices = ProductListPage.getIntProductPrices();
+
+        Assert.assertTrue(productPrices[0] > productPrices[1]);
+        Assert.assertTrue(productPrices[1] > productPrices[2]);
     }
 
 }

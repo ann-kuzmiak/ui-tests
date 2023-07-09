@@ -14,6 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <aspectj.version>1.9.9.1</aspectj.version>
     </properties>
 
     <dependencies>
@@ -35,6 +36,12 @@
             <artifactId>testng</artifactId>
             <version>7.7.1</version>
             <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-testng -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>2.23.0</version>
         </dependency>
     </dependencies>
 
@@ -58,6 +65,13 @@
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.22.1</version>
+                    <configuration>
+                        <argLine> -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                        </argLine>
+                        <suiteXmlFiles>
+                            <suiteXmlFile>testng_jenkins.xml</suiteXmlFile>
+                        </suiteXmlFiles>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
@@ -87,7 +101,7 @@
                     <version>3.0.0</version>
                     <configuration>
                         <suiteXmlFiles>
-                            <suiteXmlFile>testng.xml</suiteXmlFile>
+<!--                            <suiteXmlFile>testng.xml</suiteXmlFile>-->
                         </suiteXmlFiles>
                     </configuration>
                 </plugin>
