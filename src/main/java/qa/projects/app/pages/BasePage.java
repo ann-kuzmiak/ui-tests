@@ -15,4 +15,8 @@ public class BasePage {
     public static void openCart() {
         cartButton.click();
     }
+
+    public static void searchProduct(String input) {
+        BasePage.searchInput.setValue(input).pressEnter();
+    }
 }
